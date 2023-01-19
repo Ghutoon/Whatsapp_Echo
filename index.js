@@ -41,50 +41,64 @@ app.get('/verification', (req, res) => {
 });
 
 var to, text;
+lock = false;
+
 app.post('/verification', async (req, res) => {
-  console.dir(req.body, {
-    depth: null
-  });
-  try {
-    to = req.body.entry[0].changes[0].value["messages"][0]["from"];
-    text = req.body.entry[0].changes[0].value["messages"][0]["text"]["body"];
-    console.log(to);
-    console.log(text);
-    res.sendStatus(200);
 
-    var data = JSON.stringify({
-      "messaging_product": "whatsapp",
-      "to": '917044174529',
-      "type": "text",
-      "text": {
-        "body": from
-      }
+  if (lock == false) {
+    lock = true;
+
+
+    console.dir(req.body, {
+      depth: null
     });
+    try {
+      to = req.body.entry[0].changes[0].value["messages"][0]["from"];
+      text = req.body.entry[0].changes[0].value["messages"][0]["text"]["body"];
+      console.log(to);
+      console.log(text);
+      res.sendStatus(200);
 
-    var config = {
-      method: 'post',
-      url: 'https://graph.facebook.com/v15.0/101412459527848/messages',
-      headers: {
-        'Authorization': `Bearer ${process.env.TOKEN}`,
-        'Content-Type': 'application/json'
-      },
-      data: data
-    };
-
-    axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-        console.log("some error happened with axios");
+      var data = JSON.stringify({
+        "messaging_product": "whatsapp",
+        "to": '917044174529',
+        "type": "text",
+        "text": {
+          "body": from
+        }
       });
 
+      var config = {
+        method: 'post',
+        url: 'https://graph.facebook.com/v15.0/101412459527848/messages',
+        headers: {
+          'Authorization': `Bearer ${process.env.TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        data: data
+      };
+
+      axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+          lock = true;
+        })
+        .catch(function (error) {
+          console.log("some error happened with axios");
+          lock = true;
+        });
 
 
-  } catch (error) {
-    console.log("error");
-    res.sendStatus(401);
+
+    } catch (error) {
+      lock = true;
+      console.log("error");
+      res.sendStatus(401);
+    }
+
   }
+
+
 
 });
 
