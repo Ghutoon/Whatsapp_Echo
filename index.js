@@ -36,8 +36,7 @@ app.post('/verification', (req, res) => {
 });
 
 app.get('/messages', (req, res) => {
-    console.log("asskjbhasjkf");
-    console.log(from);
+    res.sendStatus(200);
 });
 
 
