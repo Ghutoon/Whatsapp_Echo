@@ -46,13 +46,12 @@ lock = false;
 app.post('/verification', async (req, res) => {
 
   if (lock == false) {
-    // lock = true;
+    lock = true;
 
 
     console.dir(req.body, {
       depth: null
     });
-    /*
     try {
       to = req.body.entry[0].changes[0].value["messages"][0]["from"];
       text = req.body.entry[0].changes[0].value["messages"][0]["text"]["body"];
@@ -98,9 +97,8 @@ app.post('/verification', async (req, res) => {
     }
 
   }
-  */
 
-  }
+
 
 });
 
