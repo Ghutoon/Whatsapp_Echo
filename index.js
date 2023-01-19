@@ -35,9 +35,5 @@ app.post('/verification', (req, res) => {
     res.sendStatus(200);
 });
 
-app.get('/messages', (req, res) => {
-    res.sendStatus(200);
-});
-
 
 app.listen(port);
