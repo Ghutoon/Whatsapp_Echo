@@ -30,5 +30,9 @@ app.get('/verification', (req, res) =>{
   }
 });
 
+app.post('/verification', (req, res) => {
+    console.dir(req.body, { depth : null })
+});
+
 // Export the Express API
 module.exports = app
