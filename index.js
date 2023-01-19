@@ -1,12 +1,12 @@
-// index.js
-const express = require('express')
+const express = require('express');
 
-const app = express()
-const PORT = 8080
+const app = express();
+const port = process.env.PORT || 8080; // TODO : 
 
-app.listen(PORT, () => {
-  console.log(`API listening on PORT ${PORT} `)
-})
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+
 
 app.get('/', (req, res) => {
   res.send('Hey this is my API running 🥳')
@@ -28,8 +28,12 @@ app.get('/verification', (req, res) =>{
 });
 
 app.post('/verification', (req, res) => {
-    console.dir(req.body, { depth : null })
+    console.dir(req.body, { depth: null })
+    res.sendStatus(200);
 });
 
-// Export the Express API
-module.exports = app
+
+app.listen(PORT, () => {
+  console.log(`API listening on PORT ${PORT} `)
+})
+
