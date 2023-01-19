@@ -91,7 +91,9 @@ app.post('/verification', async (req, res) => {
   //   depth: null
   // })
 
-  axios(await extract_num_and_message(req.body))
+  axios(await extract_num_and_message(req.body).catch((error2) => {
+      console.log("something went wrong here");
+    }))
     .then(function (response) {
       console.log("success");
     })
