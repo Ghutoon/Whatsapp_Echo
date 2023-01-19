@@ -92,9 +92,6 @@ app.post('/verification', async (req, res) => {
   // })
 
   axios(await extract_num_and_message(req.body)
-      .then((response) => {
-        console.log("received extracted payload");
-      })
       .catch((error2) => {
         console.log("something went wrong here");
       }))
