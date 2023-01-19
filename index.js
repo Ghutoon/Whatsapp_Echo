@@ -28,12 +28,12 @@ app.get('/verification', (req, res) =>{
 });
 
 app.post('/verification', (req, res) => {
-    console.dir(req.body, { depth: null })
+    console.dir(req.body, { depth: null });
     res.sendStatus(200);
 });
 
 
 app.listen(PORT, () => {
-  console.log(`API listening on PORT ${PORT} `)
+    console.log(`API listening on PORT ${PORT} `);
 })
 
