@@ -1,5 +1,5 @@
 const express = require('express');
-
+//const test_js = import('test.js');
 const app = express();
 const port = process.env.PORT || 8080; // TODO : 
 
@@ -28,13 +28,19 @@ app.get('/verification', (req, res) =>{
 });
 
 var to, text;
-app.post('/verification', (req, res) => {
-    console.dir(req.body, { depth: null });
+app.post('/verification', async(req, res) => {
+  console.dir(req.body, { depth: null });
+  try {
     to = req.body.entry[0].changes[0].value["messages"][0]["from"];
     text = req.body.entry[0].changes[0].value["messages"][0]["text"]["body"];
     console.log(to);
     console.log(text);
     res.sendStatus(200);
+  } catch (error) {
+    console.log("error");
+    res.sendStatus(401);
+  }
+    
 });
 
 
