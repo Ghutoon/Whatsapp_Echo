@@ -36,7 +36,8 @@ app.post('/verification', (req, res) => {
 });
 
 app.get('/messages', (req, res) => {
-    res.send(to + " " + from);
+    console.log(to);
+    console.log(from);
 });
 
 
