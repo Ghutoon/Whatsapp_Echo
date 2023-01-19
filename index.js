@@ -30,10 +30,12 @@ app.get('/verification', (req, res) =>{
 var to, text;
 app.post('/verification', (req, res) => {
     console.dir(req.body, { depth: null });
-    to = req.body.entry[0].changes[0].value["messages"][0]["from"];
-    text = req.body.entry[0].changes[0].value["messages"][0]["text"]["body"];
+    /*to = req.body.entry[0].changes[0].value["messages"][0]["from"];
+    text = req.body.entry[0].changes[0].value["messages"][0]["text"]["body"];*/
     res.sendStatus(200);
 });
 
 
+
 app.listen(port);
+console.log('Server started at http://localhost:' + port);
