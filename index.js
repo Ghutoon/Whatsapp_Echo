@@ -42,10 +42,11 @@ app.get('/verification', (req, res) => {
 
 var to, text;
 lock = false;
-
+counter = 1;
 app.post('/verification', (req, res) => {
 
-  console.log("hello world");
+  console.log(`hello world ${counter}`);
+  counter += 1;
   res.sendStatus(200);
   // if (lock == false) {
   //   lock = true;
