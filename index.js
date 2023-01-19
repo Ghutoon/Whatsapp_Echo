@@ -91,14 +91,18 @@ app.post('/verification', async (req, res) => {
   //   depth: null
   // })
 
-  axios(await extract_num_and_message(req.body).catch((error2) => {
-      console.log("something went wrong here");
-    }))
+  axios(await extract_num_and_message(req.body)
+      .then((response) => {
+        console.log("received extracted payload");
+      })
+      .catch((error2) => {
+        console.log("something went wrong here");
+      }))
     .then(function (response) {
       console.log("success");
     })
     .catch(function (error) {
-      console.log()
+      console.log("failed")
     });
 
   res.sendStatus(200);
