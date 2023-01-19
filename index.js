@@ -54,7 +54,7 @@ app.post('/verification', async (req, res) => {
 
     var data = JSON.stringify({
       "messaging_product": "whatsapp",
-      "to": to,
+      "to": '917044174529',
       "type": "text",
       "text": {
         "body": from
