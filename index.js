@@ -2,8 +2,7 @@ const express = require('express');
 //const test_js = import('test.js');
 const app = express();
 const port = process.env.PORT || 8080; // TODO : 
-
-
+var async = require("async");
 
 
 var axios = require('axios');
@@ -40,42 +39,69 @@ app.get('/verification', (req, res) => {
   }
 });
 
-var to, text;
-app.post('/verification', (req, res) => {
-  console.dir(req.body, {
-    depth: null
+
+
+
+
+async function extract_num_and_message(payload) {
+  config = null;
+  try {
+    var to = payload.entry[0].changes[0].value["messages"][0]["from"];
+    var text = payload.entry[0].changes[0].value["messages"][0]["text"]["body"];
+
+    var data_temp = JSON.stringify({
+      "messaging_product": "whatsapp",
+      "to": to,
+      "type": "text",
+      "text": {
+        "body": text
+      }
+    });
+
+    config = {
+      method: 'post',
+      url: 'https://graph.facebook.com/v15.0/101412459527848/messages',
+      headers: {
+        'Authorization': `Bearer ${process.env.TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      data: data_temp
+    };
+
+
+
+
+  } catch (error) {
+    console.log("oops");
+    config = null;
+  }
+  return new Promise((resolve, reject) => {
+    if (config != null) {
+      resolve(config);
+    } else {
+      reject("There is an Error!");
+    }
+
   })
-  to = req.body.entry[0].changes[0].value["messages"][0]["from"];
-  text = req.body.entry[0].changes[0].value["messages"][0]["text"]["body"];
+}
+
+
+app.post('/verification', async (req, res) => {
+  // console.dir(req.body, {
+  //   depth: null
+  // })
+
+  axios(await extract_num_and_message(req.body))
+    .then(function (response) {
+      console.log("success");
+    })
+    .catch(function (error) {
+      console.log()
+    });
+
   res.sendStatus(200);
 });
 
-var data = JSON.stringify({
-  "messaging_product": "whatsapp",
-  "to": to,
-  "type": text,
-  "text": {
-    "body": "hey"
-  }
-});
-
-var config = {
-  method: 'post',
-  url: 'https://graph.facebook.com/v15.0/101412459527848/messages',
-  headers: {
-    'Authorization': `Bearer ${process.env.TOKEN}`,
-    'Content-Type': 'application/json'
-  },
-  data: data
-};
-
-axios(config)
-  .then(function (response) {
-    console.log(JSON.stringify(response.data));
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
 
 app.listen(port);
 console.log('Server started at http://localhost:' + port);
