@@ -33,7 +33,4 @@ app.post('/verification', (req, res) => {
 });
 
 
-app.listen(PORT, () => {
-    console.log(`API listening on PORT ${PORT} `);
-})
-
+app.listen(port);
