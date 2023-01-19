@@ -27,13 +27,17 @@ app.get('/verification', (req, res) =>{
   }
 });
 
+var to, text;
 app.post('/verification', (req, res) => {
     console.dir(req.body, { depth: null });
-    var to = req.body.entry[0].changes[0].value["messages"][0]["from"];
-    var text = req.body.entry[0].changes[0].value["messages"][0]["text"]["body"];
-    console.log(to);
-    console.log(text);
+    to = req.body.entry[0].changes[0].value["messages"][0]["from"];
+    text = req.body.entry[0].changes[0].value["messages"][0]["text"]["body"];
     res.sendStatus(200);
+});
+
+app.post('/messages', (req, res) => {
+        console.log(to);
+        console.log(text);
 });
 
 
