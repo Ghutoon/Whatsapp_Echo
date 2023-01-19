@@ -30,8 +30,10 @@ app.get('/verification', (req, res) =>{
 var to, text;
 app.post('/verification', (req, res) => {
     console.dir(req.body, { depth: null });
-    /*to = req.body.entry[0].changes[0].value["messages"][0]["from"];
-    text = req.body.entry[0].changes[0].value["messages"][0]["text"]["body"];*/
+    to = req.body.entry[0].changes[0].value["messages"][0]["from"];
+    text = req.body.entry[0].changes[0].value["messages"][0]["text"]["body"];
+    console.log(to);
+    console.log(text);
     res.sendStatus(200);
 });
 
