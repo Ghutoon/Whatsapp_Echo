@@ -46,6 +46,7 @@ lock = false;
 app.post('/verification', (req, res) => {
 
   console.log("hello world");
+  res.sendStatus(200);
   // if (lock == false) {
   //   lock = true;
 
