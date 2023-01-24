@@ -92,17 +92,17 @@ app.post('/verification', async (req, res) => {
   // })
 
   axios(await extract_num_and_message(req.body)
+      .then(function (response) {
+        res.sendStatus(200);
+        console.log("success");
+      })
       .catch((error2) => {
         console.log("something went wrong here");
       }))
-    .then(function (response) {
-      console.log("success");
-    })
     .catch(function (error) {
       console.log("failed")
     });
 
-  res.sendStatus(200);
 });
 
 
