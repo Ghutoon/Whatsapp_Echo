@@ -54,7 +54,9 @@ function extract_number_and_message(payload) {
         };
 
     } catch (error) {
-        console.error(payload);
+        console.error(payload, {
+            depth: null
+        });
         console.log("something went wrong trying to extract message information");
         config = null;
     }
