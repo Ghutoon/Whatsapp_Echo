@@ -40,7 +40,6 @@ app.get('/verification', (req, res) => {
 });
 
 
-/*
 
 
 async function extract_num_and_message(payload) {
@@ -104,7 +103,7 @@ app.post('/verification', async (req, res) => {
     });
   res.sendStatus(200);
 });
-*/
+
 
 app.listen(port);
 console.log('Server started at http://localhost:' + port);
