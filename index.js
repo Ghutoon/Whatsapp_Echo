@@ -1,109 +1,96 @@
 const express = require('express');
-//const test_js = import('test.js');
-const app = express();
-const port = process.env.PORT || 8080; // TODO : 
-var async = require("async");
+const router = require("express").Router();
+const axios = require("axios");
+
+const PORT = 9999;
+const exp = express();
 
 
-var axios = require('axios');
 require('dotenv').config();
 
-
-
-
-
-app.use(express.urlencoded({
-  extended: true
+exp.use(express.json());
+exp.use(express.urlencoded({
+    extended: true
 }));
-app.use(express.json());
 
 
 
-app.get('/', (req, res) => {
-  res.send('Hey this is my API running 🥳')
-})
-
-
-
-
-app.get('/verification', (req, res) => {
-  if (req.query["hub.verify_token"] == "niladri") {
-
-    console.log("Verifying token");
-    res.send(req.query["hub.challenge"]);
-
-    console.log("Verifying token2");
-  } else {
-    console.log("Token not verified");
-    res.sendStatus(403);
-  }
+exp.get("/", (req, res) => {
+    res.send("Hello World");
 });
 
 
+exp.get("/echo", (req, res) => {
+    if (req.query['hub.verify_token'] == "niladri")
+        res.send(req.query['hub.challenge'])
+    else
+        res.sendStatus(403);
+});
 
-
-async function extract_num_and_message(payload) {
-  config = null;
-  try {
-    var to = payload.entry[0].changes[0].value["messages"][0]["from"];
-    var text = payload.entry[0].changes[0].value["messages"][0]["text"]["body"];
-
-    var data_temp = JSON.stringify({
-      "messaging_product": "whatsapp",
-      "to": to,
-      "type": "text",
-      "text": {
-        "body": text
-      }
-    });
-
-    config = {
-      method: 'post',
-      url: 'https://graph.facebook.com/v15.0/101412459527848/messages',
-      headers: {
-        'Authorization': `Bearer ${process.env.TOKEN}`,
-        'Content-Type': 'application/json'
-      },
-      data: data_temp
-    };
-
-
-
-
-  } catch (error) {
-    console.log("oops");
+async function extract_number_and_message(payload) {
     config = null;
-  }
-  return new Promise((resolve, reject) => {
-    if (config != null) {
-      resolve(config);
-    } else {
-      reject("There is an Error!");
+
+    try {
+        const number = payload.entry[0].changes[0].value["messages"][0]["from"];
+        const message = payload.entry[0].changes[0].value["messages"][0]["text"]["body"];
+
+        var reply_body = JSON.stringify({
+            "messaging_product": "whatsapp",
+            "to": number,
+            "type": "text",
+            "text": {
+                "body": message
+            }
+        });
+
+        config = {
+            method: 'post',
+            url: 'https://graph.facebook.com/v15.0/101412459527848/messages',
+            headers: {
+                'Authorization': `Bearer ${process.env.TOKEN}`,
+                'Content-Type': 'application/json'
+            },
+            data: reply_body
+        };
+
+    } catch (error) {
+        console.log("something went wrong trying to extract message information");
+        config = null;
     }
 
-  })
+    return new Promise((resolve, reject) => {
+        if (config != null)
+            resolve(config);
+        else
+            reject("There was an error trying to parse the message");
+    });
 }
 
 
-app.post('/verification', async (req, res) => {
-  // console.dir(req.body, {
-  //   depth: null
-  // })
+exp.post('/echo', async (req, res) => {
 
-  axios(await extract_num_and_message(req.body)
-      .catch((error2) => {
-        console.log("something went wrong here");
-      }))
-    .then(function (response) {
-      res.sendStatus(200);
-      console.log("success");
-    })
-    .catch(function (error) {
-      console.log("failed")
-    });
-  res.sendStatus(200);
+    // try {
+    //     const n = await extract_number_and_message(req.body)
+
+    // }
+    // catch (err) {
+
+    // }
+
+    extract_number_and_message(req.body)
+        .then((data) => {
+            res.sendStatus(200);
+            return axios(data)
+        })
+        .then((response) => {
+            console.log("successfully sent message");
+        })
+        .catch((err) => {
+            console.log("failure");
+            res.sendStatus(403);
+        });
 });
 
-
-app.listen(port);
-console.log('Server started at http://localhost:' + port);
+exp.listen(PORT, () => {
+    console.log(`express app listening to port #${PORT}`)
+})
