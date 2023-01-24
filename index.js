@@ -54,6 +54,7 @@ async function extract_number_and_message(payload) {
         };
 
     } catch (error) {
+        console.log(payload);
         console.log("something went wrong trying to extract message information");
         config = null;
     }
