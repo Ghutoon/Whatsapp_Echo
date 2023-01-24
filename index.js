@@ -80,7 +80,7 @@ exp.post('/echo', (req, res) => {
 
     const configeration = extract_number_and_message(req.body)
     if (configeration != null) {
-        sendStatus(200)
+        res.sendStatus(200)
         axios(configeration).then((result) => {
             console.log("successfully sent message");
         }).catch((err) => {
