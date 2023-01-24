@@ -27,7 +27,7 @@ exp.get("/echo", (req, res) => {
         res.sendStatus(403);
 });
 
-async function extract_number_and_message(payload) {
+function extract_number_and_message(payload) {
     config = null;
 
     try {
@@ -54,21 +54,21 @@ async function extract_number_and_message(payload) {
         };
 
     } catch (error) {
-        console.log(payload);
+        console.error(payload);
         console.log("something went wrong trying to extract message information");
         config = null;
     }
-
-    return new Promise((resolve, reject) => {
+    return (config != null) ? config : null
+    /*return new Promise((resolve, reject) => {
         if (config != null)
             resolve(config);
         else
             reject("There was an error trying to parse the message");
-    });
+    });*/
 }
 
 
-exp.post('/echo', async (req, res) => {
+exp.post('/echo', (req, res) => {
 
     // try {
     //     const n = await extract_number_and_message(req.body)
@@ -78,18 +78,30 @@ exp.post('/echo', async (req, res) => {
 
     // }
 
-    extract_number_and_message(req.body)
-        .then((data) => {
-            res.sendStatus(200);
-            return axios(data)
-        })
-        .then((response) => {
+    const configeration = extract_number_and_message(req.body)
+    if (configeration != null) {
+        sendStatus(200)
+        axios(configeration).then((result) => {
             console.log("successfully sent message");
-        })
-        .catch((err) => {
+        }).catch((err) => {
             console.log("failure");
-            res.sendStatus(403);
         });
+
+    } else {
+        console.log("Error occured")
+        res.sendStatus(403)
+    }
+    /*.then((data) => {
+        res.sendStatus(200);
+        return axios(data)
+    })
+    .then((response) => {
+        console.log("successfully sent message");
+    })
+    .catch((err) => {
+        console.log("failure");
+        res.sendStatus(403);
+    });*/
 });
 
 exp.listen(PORT, () => {
