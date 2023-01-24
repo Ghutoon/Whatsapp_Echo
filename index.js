@@ -13,39 +13,97 @@ require('dotenv').config();
 
 
 app.use(express.urlencoded({
-    extended: true
+  extended: true
 }));
 app.use(express.json());
 
 
 
 app.get('/', (req, res) => {
-    res.send('Hey this is my API running 🥳')
+  res.send('Hey this is my API running 🥳')
 })
 
 
 
 
 app.get('/verification', (req, res) => {
-    if (req.query["hub.verify_token"] == "niladri") {
+  if (req.query["hub.verify_token"] == "niladri") {
 
-        console.log("Verifying token");
-        res.send(req.query["hub.challenge"]);
+    console.log("Verifying token");
+    res.send(req.query["hub.challenge"]);
 
-        console.log("Verifying token2");
-    } else {
-        console.log("Token not verified");
-        res.sendStatus(403);
-    }
+    console.log("Verifying token2");
+  } else {
+    console.log("Token not verified");
+    res.sendStatus(403);
+  }
 });
 
 
-app.post('/verification', async (req, res) => {
-    console.log(req.body, {
-        depth: null
+
+
+
+async function extract_num_and_message(payload) {
+  config = null;
+  try {
+    var to = payload.entry[0].changes[0].value["messages"][0]["from"];
+    var text = payload.entry[0].changes[0].value["messages"][0]["text"]["body"];
+
+    var data_temp = JSON.stringify({
+      "messaging_product": "whatsapp",
+      "to": to,
+      "type": "text",
+      "text": {
+        "body": text
+      }
     });
-    res.sendStatus(200);
-})
+
+    config = {
+      method: 'post',
+      url: 'https://graph.facebook.com/v15.0/101412459527848/messages',
+      headers: {
+        'Authorization': `Bearer ${process.env.TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      data: data_temp
+    };
+
+
+
+
+  } catch (error) {
+    console.log("oops");
+    config = null;
+  }
+  return new Promise((resolve, reject) => {
+    if (config != null) {
+      resolve(config);
+    } else {
+      reject("There is an Error!");
+    }
+
+  })
+}
+
+
+app.post('/verification', async (req, res) => {
+  // console.dir(req.body, {
+  //   depth: null
+  // })
+
+  axios(await extract_num_and_message(req.body)
+      .then(function (response) {
+        res.sendStatus(200);
+        console.log("success");
+      })
+      .catch((error2) => {
+        console.log("something went wrong here");
+      }))
+    .catch(function (error) {
+      console.log("failed")
+    });
+  res.sendStatus(200);
+});
 
 
 app.listen(port);
